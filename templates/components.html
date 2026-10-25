@@ -1,0 +1,54 @@
+<!-- アメブロ用の部品。必要な部品だけコピーして使う。インラインCSSのみ。class・id・<style> は使わない -->
+<!-- ※暫定版：ChatGPTで作ったHTML見本（samples/html/）が届いたら、色・余白をそちらに合わせて直す -->
+
+<!-- 広告表示（商品リンクがある記事だけ、本文の一番上に置く） -->
+<p style="font-size:12px;color:#888888;margin:0 0 16px;">※この記事には広告（PR）が含まれています。</p>
+
+<!-- 大見出し -->
+<div style="background-color:#2e7d4f;color:#ffffff;font-size:18px;font-weight:bold;line-height:1.5;padding:10px 14px;margin:32px 0 16px;border-radius:6px;">見出し</div>
+
+<!-- 小見出し -->
+<div style="border-left:6px solid #2e7d4f;border-bottom:1px solid #cfe5d7;color:#1f5e3a;font-size:16px;font-weight:bold;line-height:1.5;padding:6px 10px;margin:24px 0 12px;">小見出し</div>
+
+<!-- 本文の段落 -->
+<p style="font-size:15px;line-height:1.9;margin:0 0 16px;">本文</p>
+
+<!-- 重要ポイント（淡いグリーン） -->
+<div style="background-color:#eef7f0;border:1px solid #b9dcc4;border-radius:8px;padding:14px 16px;margin:16px 0;">
+<p style="font-weight:bold;color:#1f5e3a;margin:0 0 8px;">ポイント</p>
+<p style="font-size:15px;line-height:1.8;margin:0;">・内容<br>・内容</p>
+</div>
+
+<!-- 注意点（淡い赤） -->
+<div style="background-color:#fdf0f0;border:1px solid #f0c4c4;border-radius:8px;padding:14px 16px;margin:16px 0;">
+<p style="font-weight:bold;color:#b23b3b;margin:0 0 8px;">注意</p>
+<p style="font-size:15px;line-height:1.8;margin:0;">内容</p>
+</div>
+
+<!-- 商品紹介（淡いブルー）。商品名・リンクは data/affiliate_links.json の登録内容そのまま。価格は書かない -->
+<div style="background-color:#eef5fb;border:1px solid #bcd6ec;border-radius:8px;padding:14px 16px;margin:16px 0;">
+<p style="font-size:12px;color:#5b7a94;margin:0 0 6px;">PR</p>
+<p style="font-weight:bold;font-size:16px;color:#1d4f7a;margin:0 0 8px;">商品名</p>
+<p style="font-size:15px;line-height:1.8;margin:0 0 10px;">どんな悩みの方に合うか（登録内容と一般的な使い方の範囲で）</p>
+<p style="margin:0;"><a href="登録URL" target="_blank" rel="nofollow sponsored" style="color:#1d6fb8;font-weight:bold;">▶ 商品の詳細・価格を見る</a></p>
+</div>
+
+<!-- 比較表（横にはみ出さないよう3列まで） -->
+<table style="width:100%;border-collapse:collapse;font-size:14px;line-height:1.6;margin:16px 0;">
+<tr><th style="background-color:#2e7d4f;color:#ffffff;padding:8px;border:1px solid #b9dcc4;">項目</th><th style="background-color:#2e7d4f;color:#ffffff;padding:8px;border:1px solid #b9dcc4;">A</th><th style="background-color:#2e7d4f;color:#ffffff;padding:8px;border:1px solid #b9dcc4;">B</th></tr>
+<tr><td style="background-color:#eef7f0;padding:8px;border:1px solid #b9dcc4;font-weight:bold;">項目</td><td style="padding:8px;border:1px solid #b9dcc4;">内容</td><td style="padding:8px;border:1px solid #b9dcc4;">内容</td></tr>
+</table>
+
+<!-- Q&A -->
+<div style="border:1px solid #cfe5d7;border-radius:8px;padding:12px 14px;margin:12px 0;">
+<p style="font-weight:bold;color:#2e7d4f;font-size:15px;line-height:1.7;margin:0 0 6px;">Q. 質問</p>
+<p style="font-size:15px;line-height:1.8;margin:0;"><span style="font-weight:bold;color:#c0703a;">A.</span> 回答</p>
+</div>
+
+<!-- お店の案内（記事の最後） -->
+<div style="background-color:#f4f9f5;border:2px solid #2e7d4f;border-radius:10px;padding:16px;margin:32px 0 8px;text-align:center;">
+<p style="font-weight:bold;color:#1f5e3a;font-size:16px;margin:0 0 10px;">Amity のご案内</p>
+<p style="font-size:14px;line-height:1.8;margin:0 0 12px;">店舗情報</p>
+<p style="margin:0 0 8px;"><a href="LINE予約URL" target="_blank" style="display:inline-block;background-color:#06c755;color:#ffffff;font-weight:bold;padding:10px 20px;border-radius:24px;text-decoration:none;">LINEで予約・相談する</a></p>
+<p style="margin:0;"><a href="InstagramURL" target="_blank" style="color:#c13584;font-weight:bold;">Instagramでヘアスタイルを見る</a></p>
+</div>
