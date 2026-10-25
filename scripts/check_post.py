@@ -30,6 +30,11 @@ MIN_CHARS, MAX_CHARS = 2500, 7000
 MAX_SAME_PRODUCT = 3
 TITLE_SIMILARITY_LIMIT = 0.5
 REQUIRED_TEXT = ["よくある質問", "まとめ"]
+# 話し言葉のリズム（rules/writing_rules.md「話し言葉のリズム」）
+DESU_MASU = re.compile(r"(です|ます|ません|ました|でしょう)。$")
+MAX_DESU_RATIO = 0.5
+MAX_DESU_RUN = 6
+MIN_EXCLAIM, MIN_QUESTION = 8, 6
 
 
 class Collector(HTMLParser):
@@ -87,6 +92,33 @@ def similarity(a, b):
     return len(x & y) / len(x | y) if x and y else 0.0
 
 
+def rhythm(text):
+    """文末の偏りを調べる。です・ます止めばかりの説明書のような文章を NG にする"""
+    ng, warn = [], []
+    parts = re.split(r"(?<=[。！？!?])", text)
+    sentences = [x.strip() for x in parts if len(x.strip()) >= 4 and x.strip()[-1] in "。！？!?"]
+    if not sentences:
+        return ng, warn
+    run = longest = 0
+    for x in sentences:
+        run = run + 1 if DESU_MASU.search(x) else 0
+        longest = max(longest, run)
+    ratio = sum(bool(DESU_MASU.search(x)) for x in sentences) / len(sentences)
+    exclaim = sum(x[-1] in "！!" for x in sentences)
+    question = sum(x[-1] in "？?" for x in sentences)
+    if ratio >= MAX_DESU_RATIO:
+        ng.append(f"「です・ます」で終わる文が {ratio:.0%}（半分未満にする。言い切り・体言止め・問いかけを混ぜる）")
+    elif ratio >= 0.45:
+        warn.append(f"「です・ます」で終わる文が {ratio:.0%}（やや多い）")
+    if longest >= MAX_DESU_RUN:
+        ng.append(f"「です・ます」で終わる文が {longest} 文続く箇所がある（{MAX_DESU_RUN - 1} 文まで）")
+    if exclaim < MIN_EXCLAIM:
+        ng.append(f"「！」で終わる文が {exclaim} 個（{MIN_EXCLAIM} 個以上。「〜なんです！」「〜ですよ！」など）")
+    if question < MIN_QUESTION:
+        ng.append(f"「？」で終わる文が {question} 個（{MIN_QUESTION} 個以上。読者への問いかけを入れる）")
+    return ng, warn
+
+
 def load_products():
     return json.loads((ROOT / "data/affiliate_links.json").read_text(encoding="utf-8")).get("links", [])
 
@@ -127,6 +159,9 @@ def check(date):
     for word in FORBIDDEN_WORDS:
         if word in text or word in meta.get("title", ""):
             ng.append(f"使わない言葉「{word}」がある")
+    r_ng, r_warn = rhythm(text)
+    ng += r_ng
+    warn += r_warn
     n = len(re.sub(r"\s", "", text))
     if not MIN_CHARS <= n <= MAX_CHARS:
         ng.append(f"本文 {n} 字（{MIN_CHARS}〜{MAX_CHARS} 字にする）")
