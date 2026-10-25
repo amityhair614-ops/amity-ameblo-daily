@@ -34,7 +34,15 @@ REQUIRED_TEXT = ["よくある質問", "まとめ"]
 DESU_MASU = re.compile(r"(です|ます|ません|ました|でしょう)。$")
 MAX_DESU_RATIO = 0.5
 MAX_DESU_RUN = 6
-MIN_EXCLAIM, MIN_QUESTION = 8, 6
+MAX_SAME_ENDING_RUN = 4      # 同じ語尾が続く上限（この数で NG）
+MAX_EXCLAIM_RUN = 3          # 「！」で終わる文が続く上限（この数で NG）
+MAX_EXCLAIM_RATIO = 0.2      # 「！」で終わる文の割合の上限
+MAX_HABIT = 6                # 口ぐせ1つあたりの上限
+HABITS = ["なんです", "ですよね", "ですよ", "んですよ"]
+SAME_LENGTH_RUN, SAME_LENGTH_DIFF = 5, 4
+# 長いものから順に判定する
+ENDINGS = ["なんです", "んですよね", "んですよ", "んです", "ですよね", "ですよ", "ですね", "ますよね", "ますよ", "ますね",
+           "ましょう", "でしょう", "ません", "ました", "です", "ます", "ください"]
 
 
 class Collector(HTMLParser):
@@ -92,30 +100,72 @@ def similarity(a, b):
     return len(x & y) / len(x | y) if x and y else 0.0
 
 
+def ending(sentence):
+    """文末の形（「なんです」「ですよね」など）。決まった形でなければ最後の2字"""
+    body = sentence.rstrip("。！？!?")
+    for e in ENDINGS:
+        if body.endswith(e):
+            return e
+    return body[-2:]
+
+
+def longest_run(items, same):
+    run = best = 0
+    prev = None
+    for x in items:
+        run = run + 1 if prev is not None and same(prev, x) else 1
+        best, prev = max(best, run), x
+    return best
+
+
 def rhythm(text):
-    """文末の偏りを調べる。です・ます止めばかりの説明書のような文章を NG にする"""
+    """単調さと不自然な繰り返しを調べる。記号の最低回数は決めない"""
     ng, warn = [], []
     parts = re.split(r"(?<=[。！？!?])", text)
     sentences = [x.strip() for x in parts if len(x.strip()) >= 4 and x.strip()[-1] in "。！？!?"]
     if not sentences:
         return ng, warn
-    run = longest = 0
-    for x in sentences:
-        run = run + 1 if DESU_MASU.search(x) else 0
-        longest = max(longest, run)
-    ratio = sum(bool(DESU_MASU.search(x)) for x in sentences) / len(sentences)
-    exclaim = sum(x[-1] in "！!" for x in sentences)
-    question = sum(x[-1] in "？?" for x in sentences)
+    total = len(sentences)
+
+    # です・ます止めばかりの説明書のような文章
+    desu = [bool(DESU_MASU.search(x)) for x in sentences]
+    ratio = sum(desu) / total
     if ratio >= MAX_DESU_RATIO:
         ng.append(f"「です・ます」で終わる文が {ratio:.0%}（半分未満にする。言い切り・体言止め・問いかけを混ぜる）")
     elif ratio >= 0.45:
         warn.append(f"「です・ます」で終わる文が {ratio:.0%}（やや多い）")
-    if longest >= MAX_DESU_RUN:
-        ng.append(f"「です・ます」で終わる文が {longest} 文続く箇所がある（{MAX_DESU_RUN - 1} 文まで）")
-    if exclaim < MIN_EXCLAIM:
-        ng.append(f"「！」で終わる文が {exclaim} 個（{MIN_EXCLAIM} 個以上。「〜なんです！」「〜ですよ！」など）")
-    if question < MIN_QUESTION:
-        ng.append(f"「？」で終わる文が {question} 個（{MIN_QUESTION} 個以上。読者への問いかけを入れる）")
+    run = longest_run(desu, lambda a, b: a and b) if any(desu) else 0
+    if run >= MAX_DESU_RUN:
+        ng.append(f"「です・ます」で終わる文が {run} 文続く箇所がある（{MAX_DESU_RUN - 1} 文まで）")
+
+    # 同じ語尾の連続（「〜なんです。〜なんです。〜なんです。」など）
+    ends = [ending(x) for x in sentences]
+    run = longest_run(ends, lambda a, b: a == b)
+    if run >= MAX_SAME_ENDING_RUN:
+        word = next(e for i, e in enumerate(ends) if longest_run(ends[i:i + run], lambda a, b: a == b) == run)
+        ng.append(f"同じ語尾「{word}」が {run} 文続く箇所がある（{MAX_SAME_ENDING_RUN - 1} 文まで）")
+
+    # 「！」の多用
+    excl = [x[-1] in "！!" for x in sentences]
+    run = longest_run(excl, lambda a, b: a and b) if any(excl) else 0
+    if run >= MAX_EXCLAIM_RUN:
+        ng.append(f"「！」で終わる文が {run} 文続く箇所がある（{MAX_EXCLAIM_RUN - 1} 文まで。「！」は必要なところだけ）")
+    if sum(excl) / total > MAX_EXCLAIM_RATIO:
+        ng.append(f"「！」で終わる文が {sum(excl) / total:.0%}（2割まで。「！」は必要なところだけ）")
+
+    # 口ぐせの使いすぎ
+    for habit in HABITS:
+        count = sum(ending(x) == habit for x in sentences)
+        if count > MAX_HABIT:
+            ng.append(f"語尾「〜{habit}」が {count} 回（{MAX_HABIT} 回まで。言い回しを変える）")
+
+    # 長さがそろった文の連続
+    lengths = [len(x) for x in sentences]
+    for i in range(total - SAME_LENGTH_RUN + 1):
+        window = lengths[i:i + SAME_LENGTH_RUN]
+        if max(window) - min(window) <= SAME_LENGTH_DIFF:
+            warn.append(f"長さがほぼ同じ文が {SAME_LENGTH_RUN} 文続く（「{sentences[i][:12]}…」から）")
+            break
     return ng, warn
 
 
@@ -159,7 +209,8 @@ def check(date):
     for word in FORBIDDEN_WORDS:
         if word in text or word in meta.get("title", ""):
             ng.append(f"使わない言葉「{word}」がある")
-    r_ng, r_warn = rhythm(text)
+    # 最後の LINE・店舗・Instagram は決まった文なので、リズムの確認から外す
+    r_ng, r_warn = rhythm(text.split("LINEにてご予約")[0])
     ng += r_ng
     warn += r_warn
     n = len(re.sub(r"\s", "", text))
