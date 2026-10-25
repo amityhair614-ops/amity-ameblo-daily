@@ -5,7 +5,7 @@ Amity のアメブロ用収益記事を毎日1本作って保存するリポジ�
 - 記事: `posts/YYYY-MM-DD/article.html`（アメブロの「HTML表示」に貼る本文）、`meta.json`（タイトル・テーマ・使った商品）
 - iPhoneでのコピー: 毎日更新されるコピー用ページ（URLは `data/copy_page.json`）。開けないときは GitHub アプリで `posts/日付/article.html` → 右上「…」→ Copy
 - テーマの履歴: `data/theme_history.csv`　失敗の記録: `logs/failures.md`
-- 商品リンク: `data/affiliate_links.json`（登録したものだけ使う）
+- 商品: `data/affiliate_links.json`（登録したものだけ使う）。記事には商品名だけが入るので、投稿時にアメブロのエディタで Ameba Pick のリンクと広告表示を設定する
 - 収益の記録: `data/performance.csv` に月ごとのクリック数・収益を記入すると、テーマ選びに使います
 - 見本の追加: `samples/README.md`（参考記事6本の本文・HTMLを保存済み。分析は `rules/style_analysis.md`）
 - テーマ候補の確認: `python3 scripts/pick_theme.py`（過去記事と近いテーマ・カテゴリの偏りを表示）

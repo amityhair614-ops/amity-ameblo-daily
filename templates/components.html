@@ -7,9 +7,6 @@
 【ここに本文】
 </div>
 
-<!-- ===== 広告表示（商品リンクがある記事だけ、包みのすぐ内側・一番上） ===== -->
-<p style="font-size:12px;color:#888888;margin:0 0 8px;">※この記事には広告（PR）が含まれています。</p>
-
 <!-- ===== プロフィール（全記事共通。文は profile.json の self_intro） ===== -->
 <div style="margin:20px 0;padding:16px;background:#f2f8f6;border-left:5px solid #72a696;border-radius:10px;overflow:hidden;"><img src="https://tomooono.com/wp-content/uploads/2021/11/112AB42D-36A9-4D5C-B385-0BC5A421B489-310-0000001C1FDE59A6-scaled.jpg" alt="オノ" style="width:70px;height:70px;object-fit:cover;border-radius:50%;float:left;margin:0 14px 8px 0;"><div style="font-weight:bold;color:#4f7d70;margin-bottom:5px;">オノ</div><div style="padding:11px 13px;background:#ffffff;border-radius:9px;">軽やかさ、柔らかな雰囲気のショート、ボブヘアが得意な小野です</div><div style="clear:both;"></div></div>
 
@@ -59,8 +56,9 @@
 <!-- ===== 比較表（3列まで） ===== -->
 <table style="width:100%;border-collapse:collapse;font-size:14px;margin:24px 0;line-height:1.6;"><tbody><tr style="background:#72a696;color:#ffffff;"><th style="border:1px solid #c8dcd5;padding:11px 8px;text-align:left;width:30%;">項目</th><th style="border:1px solid #c8dcd5;padding:11px 8px;text-align:left;">A</th><th style="border:1px solid #c8dcd5;padding:11px 8px;text-align:left;">B</th></tr><tr style="background:#ffffff;"><td style="border:1px solid #c8dcd5;padding:10px 8px;font-weight:bold;">行1</td><td style="border:1px solid #c8dcd5;padding:10px 8px;">内容</td><td style="border:1px solid #c8dcd5;padding:10px 8px;">内容</td></tr><tr style="background:#eef8f5;"><td style="border:1px solid #c8dcd5;padding:10px 8px;font-weight:bold;">行2</td><td style="border:1px solid #c8dcd5;padding:10px 8px;">内容</td><td style="border:1px solid #c8dcd5;padding:10px 8px;">内容</td></tr></tbody></table>
 
-<!-- ===== 商品紹介（青枠）。商品名は display_name、リンクは url（data/affiliate_links.json の登録どおり）。価格は書かない ===== -->
-<div style="margin:25px 0;padding:20px;background:#eef7ff;border:2px solid #8db8d0;border-radius:12px;text-align:center;"><div style="font-size:12px;color:#757575;margin-bottom:6px;">PR</div><div style="font-size:17px;font-weight:bold;color:#333333;line-height:1.6;margin-bottom:6px;">商品の display_name</div><div style="font-size:13px;color:#757575;margin-bottom:14px;">販売先（楽天市場／Amazon）</div><a href="登録URL" target="_blank" rel="nofollow sponsored" style="display:block;padding:13px 10px;background:#438ccb;color:#ffffff;font-weight:bold;text-decoration:none;border-radius:8px;">商品ページで詳しく見る</a></div>
+<!-- ===== 商品名（青枠・太字）。data/affiliate_links.json の display_name だけを入れる -->
+<!--       リンク・販売先・ボタン・「PR」・価格・購入誘導文は入れない。本人が投稿時に Ameba Pick のリンクを設定する ===== -->
+<div style="margin:25px 0;padding:20px;background:#eef7ff;border:2px solid #8db8d0;border-radius:12px;text-align:center;"><strong style="font-size:18px;color:#416e89;line-height:1.6;">商品の display_name</strong></div>
 
 <!-- ===== Q&A（「よくある質問」の h3 の下に3〜5問） ===== -->
 <div style="margin:20px 0;padding:18px;background:#ffffff;border:2px solid #dce7e3;border-radius:12px;"><p style="font-weight:bold;color:#406f61;">Q. 質問？</p><p><strong style="color:#d9863d;">A.</strong> 回答。</p></div>

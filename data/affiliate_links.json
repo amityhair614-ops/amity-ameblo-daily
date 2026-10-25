@@ -1,5 +1,5 @@
 {
-  "_説明": "参考記事などで商品名とリンク先を確認できたものだけ登録する。記事作成時にリンクを作成・変更しない。価格は書かない。url は参考記事にあった Ameba Pick のリンク（aid）。name は Ameba Pick に表示された商品名そのまま、display_name は記事中で使う短い名前（name から販促文を除いたもの）。facts は参考記事に書かれていた内容だけ。",
+  "_説明": "参考記事などで商品名とリンク先を確認できたものだけ登録する。記事には display_name だけを書き、url は HTML に入れない（本人が投稿時に Ameba Pick でリンクを設定する）。価格は書かない。url は参考記事にあった Ameba Pick のリンク（aid）の記録。name は Ameba Pick に表示された商品名そのまま、display_name は記事中で使う短い名前（name から販促文を除いたもの）。facts は参考記事に書かれていた内容だけ。",
   "links": [
     {
       "id": "rekera-emulsion-amazon",

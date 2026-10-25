@@ -6,7 +6,8 @@ Amity（美容室）のアメブロ用収益記事を、毎日1本だけ新し�
 - 扱うのはこのリポジトリだけ。note・WordPress・動画編集など他のリポジトリには触れない
 - アメブロへのログイン・投稿はしない。有料API・外部サービスは使わない
 - 新規記事のみ。過去記事の書き直しや、既存の posts/ の上書きはしない
-- リンクは data/affiliate_links.json と rules/profile.json に登録されたものだけ。作成・変更しない
+- リンクは rules/profile.json に登録されたもの（LINE・店舗・Instagram）だけ。作成・変更しない
+- 商品は data/affiliate_links.json の display_name を名前だけ書く。アフィリエイトURL・購入ボタン・誘導文・広告表示（PR）は HTML に入れない（本人が投稿時に Ameba Pick のリンクと必要な表示を設定する）
 - 商品名・価格・効能・実体験・お客様の声・受賞歴を作らない
 - 定期タスクの作成・変更・削除はしない。rules/・scripts/・templates/・CLAUDE.md は変更しない（本人の指示があるときを除く）
 

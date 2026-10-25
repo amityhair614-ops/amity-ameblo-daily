@@ -22,10 +22,12 @@ ALLOWED_TAGS = {
 VOID_TAGS = {"br", "hr", "img"}
 ALLOWED_ATTRS = {"style", "href", "target", "rel", "src", "alt", "width", "height", "colspan", "rowspan"}
 FORBIDDEN_CSS = ["position", "@media", "javascript:", "expression(", "url(", "display:flex", "display: flex", "grid"]
-AD_LABEL = re.compile(r"(PR|広告|アフィリエイト)")
+# 広告表示・購入誘導は自動生成HTMLに入れない（本人が投稿時にアメブロで設定する）
+AD_LABEL = re.compile(r"((?<![A-Za-z])PR(?![A-Za-z])|広告|アフィリエイト)")
+CTA_WORDS = ["で見る", "商品ページ", "詳細を見る", "詳しく見る", "購入はこちら", "こちらから購入", "購入する", "チェックする▶", "▶"]
 PRICE = re.compile(r"[0-9０-９,，]+\s*円")
 MIN_CHARS, MAX_CHARS = 2500, 7000
-MAX_SAME_LINK = 3
+MAX_SAME_PRODUCT = 3
 TITLE_SIMILARITY_LIMIT = 0.5
 REQUIRED_TEXT = ["よくある質問", "まとめ"]
 
@@ -85,12 +87,8 @@ def similarity(a, b):
     return len(x & y) / len(x | y) if x and y else 0.0
 
 
-def load_allowed_urls():
-    links = json.loads((ROOT / "data/affiliate_links.json").read_text(encoding="utf-8"))
-    affiliate = {item["url"] for item in links.get("links", [])}
-    profile = json.loads((ROOT / "rules/profile.json").read_text(encoding="utf-8"))
-    site = {u for u in profile.get("allowed_urls", []) if u}
-    return affiliate, site
+def load_products():
+    return json.loads((ROOT / "data/affiliate_links.json").read_text(encoding="utf-8")).get("links", [])
 
 
 def load_history(date):
@@ -138,36 +136,41 @@ def check(date):
     if PRICE.search(text):
         ng.append(f"価格の記載がある（「{PRICE.search(text).group()}」）。価格はリンク先で確認と書く")
 
-    affiliate, site = load_allowed_urls()
     profile = json.loads((ROOT / "rules/profile.json").read_text(encoding="utf-8"))
+    site = {u for u in profile.get("allowed_urls", []) if u}
     images = set(profile.get("allowed_images", []))
     for src in parser.srcs:
         if src not in images:
             ng.append(f"登録されていない画像: {src}")
     if parser.tags.count("h2") != 1:
         ng.append(f"大見出し h2 は1つだけ（今 {parser.tags.count('h2')} 個）")
-    for url in set(parser.hrefs) & affiliate:
-        if parser.hrefs.count(url) > MAX_SAME_LINK:
-            ng.append(f"同じ商品リンクが {parser.hrefs.count(url)} 回（{MAX_SAME_LINK} 回まで）: {url}")
-    used_affiliate = []
+
+    # リンクは LINE・店舗・Instagram だけ。商品リンク（アフィリエイトURL）は入れない
+    products = load_products()
+    affiliate = {item["url"] for item in products}
     for href in parser.hrefs:
-        if href in affiliate:
-            used_affiliate.append(href)
+        if href in affiliate or "odsyms15" in href:
+            ng.append(f"アフィリエイトURLが入っている（投稿時に本人が設定する）: {href}")
         elif href not in site:
             ng.append(f"登録されていないリンク: {href}")
     for key in ["line_url", "instagram_url"]:
         url = profile.get(key)
         if url and url not in parser.hrefs:
             ng.append(f"{key} の案内リンクがない")
-    if used_affiliate:
-        if not AD_LABEL.search(text[:300]):
-            ng.append("商品リンクがあるのに、冒頭（300字以内）に広告表示（PR・広告）がない")
-        links = json.loads((ROOT / "data/affiliate_links.json").read_text(encoding="utf-8"))["links"]
-        ids_in_html = {item["id"] for item in links if item["url"] in used_affiliate}
-        if ids_in_html != set(meta.get("affiliate_ids", [])):
-            ng.append(f"meta.json の affiliate_ids が本文のリンクと一致しない（本文: {sorted(ids_in_html)}）")
-    elif meta.get("affiliate_ids"):
-        ng.append("meta.json に affiliate_ids があるのに本文に商品リンクがない")
+    m = AD_LABEL.search(text)
+    if m:
+        ng.append(f"広告表示「{m.group()}」がある（自動生成HTMLには入れない）")
+    for word in CTA_WORDS:
+        if word in text:
+            ng.append(f"購入への誘導文「{word}」がある（商品は名前だけ）")
+
+    # 商品は display_name で名前だけ。meta.json の affiliate_ids と一致させる
+    named = {item["id"]: text.count(item["display_name"]) for item in products if item["display_name"] in text}
+    for pid, count in named.items():
+        if count > MAX_SAME_PRODUCT:
+            ng.append(f"商品名「{pid}」が {count} 回（{MAX_SAME_PRODUCT} 回まで）")
+    if set(named) != set(meta.get("affiliate_ids", [])):
+        ng.append(f"meta.json の affiliate_ids が本文の商品名と一致しない（本文: {sorted(named)}）")
 
     for row in load_history(date):
         if row.get("main_keyword") and row["main_keyword"] == meta.get("main_keyword"):
