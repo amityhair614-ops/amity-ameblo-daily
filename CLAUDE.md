@@ -13,7 +13,7 @@ Amity（美容室）のアメブロ用収益記事を、毎日1本だけ新し�
 ## 毎日の手順
 1. 日付は日本時間: `DATE=$(TZ=Asia/Tokyo date +%F)`。posts/$DATE/ が既にあれば何も作らずに終了し「既に存在するため作成しなかった」と報告する
 2. 次を読み直す: rules/writing_rules.md、rules/html_style.md、rules/style_analysis.md、rules/profile.json、templates/components.html、data/affiliate_links.json、data/theme_pool.md、data/theme_history.csv、data/performance.csv、samples/ の見本
-3. テーマを1つ選ぶ（下の「テーマの選び方」）
+3. テーマを1つ選ぶ（下の「テーマの選び方」）。`python3 scripts/pick_theme.py` の上位から検討する
 4. 記事を書く（rules/writing_rules.md の構成どおり）。HTMLは templates/components.html の部品だけで組み立てる
 5. posts/$DATE/article.html（アメブロに貼る本文HTML）と posts/$DATE/meta.json を作る
    - meta.json: `{"date","title","theme","main_keyword","category","search_intent","affiliate_ids":[],"sub_keywords":[]}`
@@ -30,7 +30,8 @@ Amity（美容室）のアメブロ用収益記事を、毎日1本だけ新し�
 - main に push できなかったときだけ daily/$DATE ブランチに push する
 
 ## テーマの選び方
-- data/theme_pool.md から、theme_history.csv で未使用のキーワードを選ぶ
+- data/theme_pool.md から、theme_history.csv で未使用のキーワードを選ぶ（status が published の行はアメブロに公開済みの記事。created と同じく使用済みとして扱う）
+- `scripts/pick_theme.py` が「過去記事に近い」と出したテーマは、使うなら対象（年代・髪質・場面）か切り口を変え、meta.json の theme にその違いを書く
 - 直近7本と同じカテゴリ（ショート・ボブ・白髪・くせ毛・ダメージ・シャンプー・トリートメント・ドライヤー・頭皮 等）が3本以上なら、別のカテゴリにする
 - 過去記事と同じ悩み・同じ結論にしない。近いテーマのときは、対象（年代・髪質・場面）か切り口を変える
 - data/performance.csv にクリック・収益の記録があれば、反応の良かったカテゴリと商品の組み合わせを優先する（同じ記事の焼き直しにはしない）

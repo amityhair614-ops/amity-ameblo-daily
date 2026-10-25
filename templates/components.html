@@ -1,54 +1,78 @@
-<!-- アメブロ用の部品。必要な部品だけコピーして使う。インラインCSSのみ。class・id・<style> は使わない -->
-<!-- ※暫定版：ChatGPTで作ったHTML見本（samples/html/）が届いたら、色・余白をそちらに合わせて直す -->
+<!-- アメブロ用の部品。参考記事（samples/html/ 02〜06）の装飾に合わせたもの。必要な部品だけコピーして使う -->
+<!-- インラインCSSのみ。class・id・<style>・<script>・<iframe> は使わない。部品の style は変えない（文字だけ差し替える） -->
+<!-- 【 】内の説明と「○○」は差し替える。URL・画像は rules/profile.json と data/affiliate_links.json の登録どおり -->
 
-<!-- 広告表示（商品リンクがある記事だけ、本文の一番上に置く） -->
-<p style="font-size:12px;color:#888888;margin:0 0 16px;">※この記事には広告（PR）が含まれています。</p>
-
-<!-- 大見出し -->
-<div style="background-color:#2e7d4f;color:#ffffff;font-size:18px;font-weight:bold;line-height:1.5;padding:10px 14px;margin:32px 0 16px;border-radius:6px;">見出し</div>
-
-<!-- 小見出し -->
-<div style="border-left:6px solid #2e7d4f;border-bottom:1px solid #cfe5d7;color:#1f5e3a;font-size:16px;font-weight:bold;line-height:1.5;padding:6px 10px;margin:24px 0 12px;">小見出し</div>
-
-<!-- 本文の段落 -->
-<p style="font-size:15px;line-height:1.9;margin:0 0 16px;">本文</p>
-
-<!-- 重要ポイント（淡いグリーン） -->
-<div style="background-color:#eef7f0;border:1px solid #b9dcc4;border-radius:8px;padding:14px 16px;margin:16px 0;">
-<p style="font-weight:bold;color:#1f5e3a;margin:0 0 8px;">ポイント</p>
-<p style="font-size:15px;line-height:1.8;margin:0;">・内容<br>・内容</p>
+<!-- ===== 全体の包み（記事の一番外側。最初と最後に1回ずつ） ===== -->
+<div style="font-size:16px;line-height:1.9;color:#333333;word-break:break-word;">
+【ここに本文】
 </div>
 
-<!-- 注意点（淡い赤） -->
-<div style="background-color:#fdf0f0;border:1px solid #f0c4c4;border-radius:8px;padding:14px 16px;margin:16px 0;">
-<p style="font-weight:bold;color:#b23b3b;margin:0 0 8px;">注意</p>
-<p style="font-size:15px;line-height:1.8;margin:0;">内容</p>
-</div>
+<!-- ===== 広告表示（商品リンクがある記事だけ、包みのすぐ内側・一番上） ===== -->
+<p style="font-size:12px;color:#888888;margin:0 0 8px;">※この記事には広告（PR）が含まれています。</p>
 
-<!-- 商品紹介（淡いブルー）。商品名・リンクは data/affiliate_links.json の登録内容そのまま。価格は書かない -->
-<div style="background-color:#eef5fb;border:1px solid #bcd6ec;border-radius:8px;padding:14px 16px;margin:16px 0;">
-<p style="font-size:12px;color:#5b7a94;margin:0 0 6px;">PR</p>
-<p style="font-weight:bold;font-size:16px;color:#1d4f7a;margin:0 0 8px;">商品名</p>
-<p style="font-size:15px;line-height:1.8;margin:0 0 10px;">どんな悩みの方に合うか（登録内容と一般的な使い方の範囲で）</p>
-<p style="margin:0;"><a href="登録URL" target="_blank" rel="nofollow sponsored" style="color:#1d6fb8;font-weight:bold;">▶ 商品の詳細・価格を見る</a></p>
-</div>
+<!-- ===== プロフィール（全記事共通。文は profile.json の self_intro） ===== -->
+<div style="margin:20px 0;padding:16px;background:#f2f8f6;border-left:5px solid #72a696;border-radius:10px;overflow:hidden;"><img src="https://tomooono.com/wp-content/uploads/2021/11/112AB42D-36A9-4D5C-B385-0BC5A421B489-310-0000001C1FDE59A6-scaled.jpg" alt="オノ" style="width:70px;height:70px;object-fit:cover;border-radius:50%;float:left;margin:0 14px 8px 0;"><div style="font-weight:bold;color:#4f7d70;margin-bottom:5px;">オノ</div><div style="padding:11px 13px;background:#ffffff;border-radius:9px;">軽やかさ、柔らかな雰囲気のショート、ボブヘアが得意な小野です</div><div style="clear:both;"></div></div>
 
-<!-- 比較表（横にはみ出さないよう3列まで） -->
-<table style="width:100%;border-collapse:collapse;font-size:14px;line-height:1.6;margin:16px 0;">
-<tr><th style="background-color:#2e7d4f;color:#ffffff;padding:8px;border:1px solid #b9dcc4;">項目</th><th style="background-color:#2e7d4f;color:#ffffff;padding:8px;border:1px solid #b9dcc4;">A</th><th style="background-color:#2e7d4f;color:#ffffff;padding:8px;border:1px solid #b9dcc4;">B</th></tr>
-<tr><td style="background-color:#eef7f0;padding:8px;border:1px solid #b9dcc4;font-weight:bold;">項目</td><td style="padding:8px;border:1px solid #b9dcc4;">内容</td><td style="padding:8px;border:1px solid #b9dcc4;">内容</td></tr>
-</table>
+<!-- ===== 提案スタイル（全記事共通。文は profile.json の proposal_lines） ===== -->
+<div style="margin:20px 0;padding:16px 18px;background:#fffaf0;border:1px solid #ead9b8;border-radius:10px;"><p>・ポジティブな雰囲気</p><p>・やわらかさがあるような雰囲気</p><p>・よりステキな</p><p>これら提案させていただいてます</p></div>
 
-<!-- Q&A -->
-<div style="border:1px solid #cfe5d7;border-radius:8px;padding:12px 14px;margin:12px 0;">
-<p style="font-weight:bold;color:#2e7d4f;font-size:15px;line-height:1.7;margin:0 0 6px;">Q. 質問</p>
-<p style="font-size:15px;line-height:1.8;margin:0;"><span style="font-weight:bold;color:#c0703a;">A.</span> 回答</p>
-</div>
+<!-- ===== 大見出し（記事タイトルと同じ文。1回だけ） ===== -->
+<h2 style="font-size:24px;line-height:1.55;color:#333333;margin:36px 0 22px;padding:15px 16px;background:#eef8f5;border-left:6px solid #72a696;border-radius:4px;">記事タイトル</h2>
 
-<!-- お店の案内（記事の最後） -->
-<div style="background-color:#f4f9f5;border:2px solid #2e7d4f;border-radius:10px;padding:16px;margin:32px 0 8px;text-align:center;">
-<p style="font-weight:bold;color:#1f5e3a;font-size:16px;margin:0 0 10px;">Amity のご案内</p>
-<p style="font-size:14px;line-height:1.8;margin:0 0 12px;">店舗情報</p>
-<p style="margin:0 0 8px;"><a href="LINE予約URL" target="_blank" style="display:inline-block;background-color:#06c755;color:#ffffff;font-weight:bold;padding:10px 20px;border-radius:24px;text-decoration:none;">LINEで予約・相談する</a></p>
-<p style="margin:0;"><a href="InstagramURL" target="_blank" style="color:#c13584;font-weight:bold;">Instagramでヘアスタイルを見る</a></p>
-</div>
+<!-- ===== 小見出し（①〜⑨、よくある質問、まとめ） ===== -->
+<h3 style="font-size:21px;line-height:1.5;color:#333333;margin:38px 0 20px;padding:10px 14px;border-bottom:3px solid #72a696;">① 小見出し</h3>
+
+<!-- ===== 本文（1文ごとに p。style は付けない） ===== -->
+<p>本文の1文。</p>
+
+<!-- ===== 相談の吹き出し（導入。実際のお客様の話は作らない。一般的な悩みとして書く） ===== -->
+<p>こんなご相談をよくいただきます。</p>
+<div style="margin:25px 0;"><div style="font-size:14px;font-weight:bold;color:#777777;margin-bottom:5px;">よくあるご相談</div><div style="padding:16px 18px;background:#fff1ef;border:1px solid #efb1aa;border-radius:12px;">1文目。<br><br>2文目。<br><br>3文目？</div></div>
+
+<!-- ===== 強調（黄）：読者の心の声・判断のポイント ===== -->
+<div style="margin:22px 0;padding:18px;background:#fff8e9;border:2px solid #ddb450;border-radius:12px;text-align:center;font-size:20px;font-weight:bold;color:#5e4a1c;">「○○？」</div>
+
+<!-- ===== 強調（緑）：結論・大切なこと ===== -->
+<div style="margin:22px 0;padding:18px;background:#eef8f5;border:2px solid #75a895;border-radius:12px;text-align:center;font-size:19px;font-weight:bold;color:#406f61;">大切なこと。</div>
+
+<!-- ===== 強調（青）：【キーワード】（前に「それは」、後に「です。」） ===== -->
+<div style="margin:22px 0;padding:18px;background:#eef7ff;border:2px solid #8db8d0;border-radius:12px;text-align:center;font-size:20px;font-weight:bold;color:#416e89;">【キーワード】</div>
+
+<!-- ===== 注意（赤・中央）：「ただし〜というわけではありません」 ===== -->
+<div style="margin:22px 0;padding:18px;background:#fff2f2;border:2px solid #d98989;border-radius:12px;text-align:center;font-weight:bold;color:#884a4a;">ただし、○○というわけではありません。</div>
+
+<!-- ===== リスト（青）：原因・特徴 ===== -->
+<div style="margin:24px 0;padding:22px;background:#eef7ff;border:2px solid #8db8d0;border-radius:12px;line-height:2;"><strong>・項目<br>・項目<br>・項目</strong></div>
+
+<!-- ===== リスト（緑）：おすすめの手順・3つのまとめ ===== -->
+<div style="margin:24px 0;padding:22px;background:#eef8f5;border:2px solid #75a895;border-radius:12px;line-height:2;color:#406f61;"><strong>・項目<br>・項目<br>・項目</strong></div>
+
+<!-- ===== リスト（赤）：受診の目安・やめたいこと ===== -->
+<div style="margin:24px 0;padding:22px;background:#fff2f2;border:2px solid #d98989;border-radius:12px;line-height:2;color:#884a4a;"><strong>・項目<br>・項目</strong></div>
+
+<!-- ===== やりがちなNG（左線・赤） ===== -->
+<div style="margin:24px 0;padding:20px;background:#fff2f2;border-left:5px solid #d98989;border-radius:10px;"><p>NGの例。</p><p>NGの例。</p></div>
+
+<!-- ===== 流れ（灰）：工程・順番 ===== -->
+<div style="margin:24px 0;padding:20px;background:#f7f7f7;border-radius:12px;line-height:2;">1つ目。<br><br>2つ目。<br><br>3つ目。</div>
+
+<!-- ===== 比較表（3列まで） ===== -->
+<table style="width:100%;border-collapse:collapse;font-size:14px;margin:24px 0;line-height:1.6;"><tbody><tr style="background:#72a696;color:#ffffff;"><th style="border:1px solid #c8dcd5;padding:11px 8px;text-align:left;width:30%;">項目</th><th style="border:1px solid #c8dcd5;padding:11px 8px;text-align:left;">A</th><th style="border:1px solid #c8dcd5;padding:11px 8px;text-align:left;">B</th></tr><tr style="background:#ffffff;"><td style="border:1px solid #c8dcd5;padding:10px 8px;font-weight:bold;">行1</td><td style="border:1px solid #c8dcd5;padding:10px 8px;">内容</td><td style="border:1px solid #c8dcd5;padding:10px 8px;">内容</td></tr><tr style="background:#eef8f5;"><td style="border:1px solid #c8dcd5;padding:10px 8px;font-weight:bold;">行2</td><td style="border:1px solid #c8dcd5;padding:10px 8px;">内容</td><td style="border:1px solid #c8dcd5;padding:10px 8px;">内容</td></tr></tbody></table>
+
+<!-- ===== 商品紹介（青枠）。商品名は display_name、リンクは url（data/affiliate_links.json の登録どおり）。価格は書かない ===== -->
+<div style="margin:25px 0;padding:20px;background:#eef7ff;border:2px solid #8db8d0;border-radius:12px;text-align:center;"><div style="font-size:12px;color:#757575;margin-bottom:6px;">PR</div><div style="font-size:17px;font-weight:bold;color:#333333;line-height:1.6;margin-bottom:6px;">商品の display_name</div><div style="font-size:13px;color:#757575;margin-bottom:14px;">販売先（楽天市場／Amazon）</div><a href="登録URL" target="_blank" rel="nofollow sponsored" style="display:block;padding:13px 10px;background:#438ccb;color:#ffffff;font-weight:bold;text-decoration:none;border-radius:8px;">商品ページで詳しく見る</a></div>
+
+<!-- ===== Q&A（「よくある質問」の h3 の下に3〜5問） ===== -->
+<div style="margin:20px 0;padding:18px;background:#ffffff;border:2px solid #dce7e3;border-radius:12px;"><p style="font-weight:bold;color:#406f61;">Q. 質問？</p><p><strong style="color:#d9863d;">A.</strong> 回答。</p></div>
+
+<!-- ===== 締め（まとめの最後） ===== -->
+<p>是非参考にしてみてください！</p>
+
+<!-- ===== LINE（最後。2行目はテーマに合わせて1文変える） ===== -->
+<div style="margin:42px 0 28px;padding:22px 18px;background:#eef7ff;border:2px solid #80b2d8;border-radius:12px;"><div style="font-size:19px;font-weight:bold;color:#397ca9;text-align:center;margin-bottom:15px;">LINEにてご予約、ご相談できます！</div><p>○○のお悩みもお気軽にご相談ください。</p><p>LINEからご予約、お問い合わせができます。</p><p style="text-align:center"><strong>↓こちらをクリックお願いします↓</strong></p><div style="text-align:center;margin:16px 0;"><a href="https://line.me/R/ti/p/%40amityhair"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png" alt="友だち追加" style="max-width:100%;height:auto;border:0;"></a></div></div>
+
+<!-- ===== 店舗（最後。変えない） ===== -->
+<div style="margin:30px 0;padding:22px 16px;background:#f0faf3;border:2px solid #7fb68a;border-radius:12px;text-align:center;"><div style="font-size:22px;font-weight:bold;color:#4d8758;margin-bottom:18px;">Amity</div><p><strong>Amity アミティ</strong></p><p>住所<br><a href="https://www.google.com/maps/place//@35.357383,132.747169,16z/data=!4m2!3m1!1s0x0:0x898d1449591ee360?hl=ja-JP" style="color:#397ca9;text-decoration:underline;">島根県出雲市塩冶有原町5-51 三谷ビル</a></p><p>営業時間<br>平日・土日祝 9:00〜18:00</p><p>定休日<br>毎週月曜日・火曜日</p><div style="margin:15px 0;"><a href="https://tomooono.com/?p=5768" style="display:block;padding:13px 15px;background:#438ccb;color:#ffffff;font-weight:bold;text-decoration:none;border-radius:8px;">Amity料金に関して</a></div><div style="margin:15px 0;"><a href="https://tomooono.com/?p=5714" style="display:block;padding:13px 15px;background:#55a66a;color:#ffffff;font-weight:bold;text-decoration:none;border-radius:8px;">Amityご予約に関して</a></div></div>
+
+<!-- ===== Instagram（最後。変えない） ===== -->
+<div style="margin:25px 0;text-align:center;"><a href="https://www.instagram.com/onotomoo1980/" style="display:block;padding:14px 15px;background:#d9863d;color:#ffffff;font-weight:bold;text-decoration:none;border-radius:8px;">Instagramへ</a></div>

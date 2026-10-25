@@ -11,19 +11,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 KEEP = 7
 
-PAGE = """<!doctype html>
-<html lang="ja">
-<head>
+# Artifact に publish するため <!doctype>・<html>・<head>・<body> は書かない（公開時に付く）
+PAGE = """<title>アメブロ記事コピー</title>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>アメブロ記事コピー</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
 <style>
 :root {{ --bg:#f6f8f6; --card:#fff; --text:#1f2a24; --sub:#5d6b63; --line:#d9e3dc; --accent:#2e7d4f; --accent-text:#fff; }}
-@media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{ --bg:#121714; --card:#1b221e; --text:#e6ece8; --sub:#9fb0a6; --line:#2c3a32; --accent:#4caf7a; --accent-text:#08140d; }} }}
-:root[data-theme="dark"] {{ --bg:#121714; --card:#1b221e; --text:#e6ece8; --sub:#9fb0a6; --line:#2c3a32; --accent:#4caf7a; --accent-text:#08140d; }}
+@media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{ --bg:#121714; --card:#1b221e; --text:#e6ece8; --sub:#9fb0a6; --line:#2c3a32; --accent:#4caf7a; --accent-text:#08140d; color-scheme:dark; }} }}
+:root[data-theme="dark"] {{ --bg:#121714; --card:#1b221e; --text:#e6ece8; --sub:#9fb0a6; --line:#2c3a32; --accent:#4caf7a; --accent-text:#08140d; color-scheme:dark; }}
 * {{ box-sizing:border-box; }}
 body {{ margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,"Hiragino Sans",sans-serif; }}
-main {{ max-width:720px; margin:0 auto; padding:16px; }}
+main {{ max-width:720px; margin:0 auto; padding-block:16px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }}
 h1 {{ font-size:18px; margin:4px 0 12px; }}
 select {{ width:100%; font-size:16px; padding:10px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--text); }}
 .card {{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin-top:12px; }}
@@ -36,8 +35,6 @@ textarea {{ width:100%; height:120px; font-size:12px; margin-top:10px; border:1p
 .preview {{ background:#fff; color:#333; border-radius:10px; padding:12px; margin-top:12px; overflow-x:auto; }}
 details summary {{ cursor:pointer; color:var(--sub); font-size:14px; }}
 </style>
-</head>
-<body>
 <main>
 <h1>アメブロ記事コピー</h1>
 <select id="pick"></select>
@@ -72,8 +69,6 @@ $('copyHtml').onclick = () => copy(POSTS[+$('pick').value].html, '本文HTML');
 $('copyTitle').onclick = () => copy(POSTS[+$('pick').value].title, 'タイトル');
 if (POSTS.length) show(0); else $('t').textContent = 'まだ記事がありません';
 </script>
-</body>
-</html>
 """
 
 

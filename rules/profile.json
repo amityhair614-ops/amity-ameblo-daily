@@ -1,9 +1,31 @@
 {
-  "_説明": "ご本人に確認できた情報だけを入れる。空欄の項目は記事に書かない。",
-  "self_intro": "",
+  "_説明": "ご本人に確認できた情報だけを入れる。空欄の項目は記事に書かない。2026-10-25 に公開中の参考記事（samples/）から転記。",
+  "author_name": "オノ",
+  "self_intro": "軽やかさ、柔らかな雰囲気のショート、ボブヘアが得意な小野です",
+  "proposal_lines": ["・ポジティブな雰囲気", "・やわらかさがあるような雰囲気", "・よりステキな", "これら提案させていただいてます"],
+  "avatar_image": "https://tomooono.com/wp-content/uploads/2021/11/112AB42D-36A9-4D5C-B385-0BC5A421B489-310-0000001C1FDE59A6-scaled.jpg",
   "salon_name": "Amity",
-  "line_url": "",
-  "instagram_url": "",
-  "store_info": "",
-  "allowed_urls": []
+  "salon_name_kana": "Amity アミティ",
+  "line_url": "https://line.me/R/ti/p/%40amityhair",
+  "line_button_image": "https://scdn.line-apps.com/n/line_add_friends/btn/ja.png",
+  "instagram_url": "https://www.instagram.com/onotomoo1980/",
+  "store_info": {
+    "address": "島根県出雲市塩冶有原町5-51 三谷ビル",
+    "hours": "平日・土日祝 9:00〜18:00",
+    "closed": "毎週月曜日・火曜日"
+  },
+  "map_url": "https://www.google.com/maps/place//@35.357383,132.747169,16z/data=!4m2!3m1!1s0x0:0x898d1449591ee360?hl=ja-JP",
+  "price_url": "https://tomooono.com/?p=5768",
+  "reservation_url": "https://tomooono.com/?p=5714",
+  "allowed_urls": [
+    "https://line.me/R/ti/p/%40amityhair",
+    "https://www.instagram.com/onotomoo1980/",
+    "https://www.google.com/maps/place//@35.357383,132.747169,16z/data=!4m2!3m1!1s0x0:0x898d1449591ee360?hl=ja-JP",
+    "https://tomooono.com/?p=5768",
+    "https://tomooono.com/?p=5714"
+  ],
+  "allowed_images": [
+    "https://tomooono.com/wp-content/uploads/2021/11/112AB42D-36A9-4D5C-B385-0BC5A421B489-310-0000001C1FDE59A6-scaled.jpg",
+    "https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
+  ]
 }

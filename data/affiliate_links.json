@@ -1,4 +1,113 @@
 {
-  "_説明": "参考記事などで商品名とリンク先を確認できたものだけ登録する。記事作成時にリンクを作成・変更しない。価格は書かない。",
-  "links": []
+  "_説明": "参考記事などで商品名とリンク先を確認できたものだけ登録する。記事作成時にリンクを作成・変更しない。価格は書かない。url は参考記事にあった Ameba Pick のリンク（aid）。name は Ameba Pick に表示された商品名そのまま、display_name は記事中で使う短い名前（name から販促文を除いたもの）。facts は参考記事に書かれていた内容だけ。",
+  "links": [
+    {
+      "id": "rekera-emulsion-amazon",
+      "name": "ReKERA(リケラ) エマルジョン 200mL リトル・サイエンティスト",
+      "display_name": "ReKERA（リケラ）エマルジョン 200mL",
+      "shop": "Amazon",
+      "url": "https://d.odsyms15.com/click?aid=DrNwF0XF4SHtLyNhsBqNm5",
+      "category": ["トリートメント", "ダメージ"],
+      "facts": ["乳液タイプのトリートメント（洗い流さない）", "シャンプー後、タオルドライした髪に適量をつけ、中間から毛先へなじませてからドライヤー", "ベタベタするのが苦手な方は少量から"],
+      "fits": ["毛先のパサつき", "まとまりにくさ", "カラーによるダメージが気になる", "髪が絡まりやすい", "ロングヘアをキレイに保ちたい"],
+      "not_claims": ["使っても髪が早く伸びるわけではない"],
+      "source": "https://ameblo.jp/amityhair/entry-12981324517.html"
+    },
+    {
+      "id": "careness-scalp-mist-rakuten",
+      "name": "careness（ケアネス）テラケア スカルプミスト 100ml",
+      "display_name": "ケアネス テラケア スカルプミスト 100ml",
+      "shop": "楽天市場",
+      "url": "https://d.odsyms15.com/click?aid=QiufFJQ5Qyo00onvty9vk4",
+      "category": ["頭皮"],
+      "facts": ["頭皮用のミスト（頭皮美容液）", "髪の表面ではなく頭皮につける。使用量・タイミングは商品の説明に従う"],
+      "fits": ["頭皮の乾燥が気になる", "毎日の頭皮ケアを見直したい"],
+      "not_claims": ["発毛剤（医薬品）ではない", "使っても髪が生える・抜け毛が止まるわけではない"],
+      "source": "https://ameblo.jp/amityhair/entry-12981700553.html"
+    },
+    {
+      "id": "careness-scalp-mist-amazon",
+      "name": "【ケアネス】テラケア スカルプミスト 100mL 頭皮美容液/ジェットスプレー/マッサージ/ヘアケア",
+      "display_name": "ケアネス テラケア スカルプミスト 100mL",
+      "shop": "Amazon",
+      "url": "https://d.odsyms15.com/click?aid=8V0p2C5Ai6D98dDscOoN15",
+      "category": ["頭皮"],
+      "facts": ["頭皮美容液（ミスト）"],
+      "fits": ["頭皮の乾燥が気になる", "毎日の頭皮ケアを見直したい"],
+      "not_claims": ["発毛剤（医薬品）ではない", "使っても髪が生える・抜け毛が止まるわけではない"],
+      "source": "https://ameblo.jp/amityhair/entry-12981353452.html"
+    },
+    {
+      "id": "careness-terracare-shampoo-treatment-1000",
+      "name": "【正規品 / 2種から選べる】 ケアネス テラケア シャンプー 1000ml トリートメント 1000g 詰替用 ヘアケア シャンプー トリートメント 業務用セット エイジングケア アンチエイジング 頭皮ケア スカルプケア",
+      "display_name": "ケアネス テラケア シャンプー・トリートメント（詰替用）",
+      "shop": "楽天市場",
+      "url": "https://d.odsyms15.com/click?aid=Fqbcgmi7BZ6e3xqxqHVbK3",
+      "category": ["シャンプー", "頭皮"],
+      "facts": ["シャンプー・トリートメントの詰替用"],
+      "fits": ["毎日のシャンプーを見直したい", "頭皮や髪の普段のお手入れを見直したい"],
+      "not_claims": ["同じシリーズで揃えても育毛効果が高くなるとは限らない"],
+      "source": "https://ameblo.jp/amityhair/entry-12981353452.html"
+    },
+    {
+      "id": "notto-shampoo-rakuten",
+      "name": "NOTTO シャンプー 詰替 650ml ノットシャンプー 国内正規品 マーキュリーコスメティック リフィル 送料無料 ギフト対応不可",
+      "display_name": "NOTTO シャンプー 詰替 650ml",
+      "shop": "楽天市場",
+      "url": "https://d.odsyms15.com/click?aid=sKlnUlnG7wEOH2JneLq4e3",
+      "category": ["シャンプー"],
+      "facts": ["シャンプー（詰替）"],
+      "fits": ["シャンプーの工程をシンプルにしたい", "毎日のシャンプーを見直したい"],
+      "not_claims": ["シャンプーだけで十分かは髪質やダメージによって違う", "白髪や薄毛が改善するわけではない"],
+      "source": "https://ameblo.jp/amityhair/entry-12981354890.html"
+    },
+    {
+      "id": "diane-dry-shampoo-rakuten",
+      "name": "ダイアン パーフェクトビューティ― ドライシャンプー (水のいらないシャンプー)(95g)【ダイアン パーフェクトビューティー】",
+      "display_name": "ダイアン パーフェクトビューティー ドライシャンプー（95g）",
+      "shop": "楽天市場",
+      "url": "https://d.odsyms15.com/click?aid=Fusug4WH3EEZOa5R6A0mM3",
+      "category": ["シャンプー"],
+      "facts": ["水のいらないシャンプー（ドライシャンプー）", "水やお湯を使わず髪にふりかける"],
+      "fits": ["シャンプーできない日・面倒な日のベタつき"],
+      "not_claims": [],
+      "source": "https://ameblo.jp/amityhair/entry-12877515996.html"
+    },
+    {
+      "id": "magnet-dryer-zero-amazon-white",
+      "name": "【HOLISTIC cures】マグネットヘアプロ ドライヤーゼロ (ホワイト)",
+      "display_name": "マグネットヘアプロ ドライヤーゼロ（ホワイト）",
+      "shop": "Amazon",
+      "url": "https://d.odsyms15.com/click?aid=yqt0Sg9m9uuRJ4TKupecC6",
+      "category": ["ドライヤー"],
+      "facts": ["従来モデル", "本体重量約350g（コード・ノズル除く）", "温度5段階（40・60・80・100・120℃）・風量3段階（HIGH・MID・LOW）", "最大消費電力1400W", "ノズルはマグネット式"],
+      "fits": ["髪を早く乾かしたい", "毛量が多くドライヤーに時間がかかる", "軽いドライヤーを探している", "温度や風量を細かく調整したい"],
+      "not_claims": ["風量が強いからといって必ずツヤツヤになるわけではない"],
+      "source": "https://ameblo.jp/amityhair/entry-12981835162.html"
+    },
+    {
+      "id": "magnet-dryer-zero-plus-rakuten",
+      "name": "【レビューキャンペーン実施中】ホリスティックキュア マグネットヘアプロ ドライヤーゼロプラス MAGNETHairPro Dryer0＋ ホリスティックキュアーズ",
+      "display_name": "マグネットヘアプロ ドライヤーゼロプラス",
+      "shop": "楽天市場",
+      "url": "https://d.odsyms15.com/click?aid=XaYuOOfWRnfgIOk09wMbB2",
+      "category": ["ドライヤー"],
+      "facts": ["プラスモデル（セルフクリーニング機能付き）", "本体重量約350g・温度5段階・風量3段階は従来モデルと共通"],
+      "fits": ["髪を早く乾かしたい", "毛量が多くドライヤーに時間がかかる", "軽いドライヤーを探している"],
+      "not_claims": ["風量が強いからといって必ずツヤツヤになるわけではない"],
+      "source": "https://ameblo.jp/amityhair/entry-12981835162.html"
+    },
+    {
+      "id": "magnet-dryer-zero-plus-amazon-black",
+      "name": "【公式ストア限定オリジナルミラー付き】HOLISTIC cures マグネットヘアプロ ドライヤーゼロプラス(ブラック)",
+      "display_name": "マグネットヘアプロ ドライヤーゼロプラス（ブラック）",
+      "shop": "Amazon",
+      "url": "https://d.odsyms15.com/click?aid=6ysDWcOYXapdE2kjPPdlB7",
+      "category": ["ドライヤー"],
+      "facts": ["プラスモデル（セルフクリーニング機能付き）"],
+      "fits": ["髪を早く乾かしたい", "軽いドライヤーを探している"],
+      "not_claims": ["風量が強いからといって必ずツヤツヤになるわけではない"],
+      "source": "https://ameblo.jp/amityhair/entry-12981835162.html"
+    }
+  ]
 }

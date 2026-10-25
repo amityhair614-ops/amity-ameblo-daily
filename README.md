@@ -7,5 +7,6 @@ Amity のアメブロ用収益記事を毎日1本作って保存するリポジ�
 - テーマの履歴: `data/theme_history.csv`　失敗の記録: `logs/failures.md`
 - 商品リンク: `data/affiliate_links.json`（登録したものだけ使う）
 - 収益の記録: `data/performance.csv` に月ごとのクリック数・収益を記入すると、テーマ選びに使います
-- 見本の追加: `samples/README.md`
+- 見本の追加: `samples/README.md`（参考記事6本の本文・HTMLを保存済み。分析は `rules/style_analysis.md`）
+- テーマ候補の確認: `python3 scripts/pick_theme.py`（過去記事と近いテーマ・カテゴリの偏りを表示）
 - 毎日の手順: `CLAUDE.md`

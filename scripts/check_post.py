@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-FORBIDDEN_WORDS = ["僕は", "思います", "候補"]
+FORBIDDEN_WORDS = ["僕は", "思います", "候補", "先日お客様", "お客様から", "実際に使って"]
 # アメブロの HTML 編集で使えるタグだけ
 ALLOWED_TAGS = {
     "div", "p", "span", "strong", "b", "em", "br", "hr", "h2", "h3", "h4",
@@ -25,6 +25,7 @@ FORBIDDEN_CSS = ["position", "@media", "javascript:", "expression(", "url(", "di
 AD_LABEL = re.compile(r"(PR|広告|アフィリエイト)")
 PRICE = re.compile(r"[0-9０-９,，]+\s*円")
 MIN_CHARS, MAX_CHARS = 2500, 7000
+MAX_SAME_LINK = 3
 TITLE_SIMILARITY_LIMIT = 0.5
 REQUIRED_TEXT = ["よくある質問", "まとめ"]
 
@@ -32,7 +33,8 @@ REQUIRED_TEXT = ["よくある質問", "まとめ"]
 class Collector(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.errors, self.stack, self.hrefs, self.text = [], [], [], []
+        self.errors, self.stack, self.hrefs, self.srcs, self.text = [], [], [], [], []
+        self.tags = []
 
     def handle_starttag(self, tag, attrs):
         if tag not in ALLOWED_TAGS:
@@ -47,6 +49,9 @@ class Collector(HTMLParser):
                         self.errors.append(f"使えないCSS「{bad}」（<{tag}>）")
             if name == "href":
                 self.hrefs.append(value or "")
+            if name == "src":
+                self.srcs.append(value or "")
+        self.tags.append(tag)
         if tag not in VOID_TAGS:
             self.stack.append(tag)
 
@@ -89,11 +94,13 @@ def load_allowed_urls():
 
 
 def load_history(date):
+    """比べる過去記事。この日の自分の行（status=created）だけ除く"""
     path = ROOT / "data/theme_history.csv"
     if not path.exists():
         return []
     with path.open(encoding="utf-8") as f:
-        return [row for row in csv.DictReader(f) if row.get("date") != date]
+        return [row for row in csv.DictReader(f)
+                if not (row.get("date") == date and row.get("status") == "created")]
 
 
 def check(date):
@@ -132,13 +139,22 @@ def check(date):
         ng.append(f"価格の記載がある（「{PRICE.search(text).group()}」）。価格はリンク先で確認と書く")
 
     affiliate, site = load_allowed_urls()
+    profile = json.loads((ROOT / "rules/profile.json").read_text(encoding="utf-8"))
+    images = set(profile.get("allowed_images", []))
+    for src in parser.srcs:
+        if src not in images:
+            ng.append(f"登録されていない画像: {src}")
+    if parser.tags.count("h2") != 1:
+        ng.append(f"大見出し h2 は1つだけ（今 {parser.tags.count('h2')} 個）")
+    for url in set(parser.hrefs) & affiliate:
+        if parser.hrefs.count(url) > MAX_SAME_LINK:
+            ng.append(f"同じ商品リンクが {parser.hrefs.count(url)} 回（{MAX_SAME_LINK} 回まで）: {url}")
     used_affiliate = []
     for href in parser.hrefs:
         if href in affiliate:
             used_affiliate.append(href)
         elif href not in site:
             ng.append(f"登録されていないリンク: {href}")
-    profile = json.loads((ROOT / "rules/profile.json").read_text(encoding="utf-8"))
     for key in ["line_url", "instagram_url"]:
         url = profile.get(key)
         if url and url not in parser.hrefs:
@@ -156,6 +172,9 @@ def check(date):
     for row in load_history(date):
         if row.get("main_keyword") and row["main_keyword"] == meta.get("main_keyword"):
             ng.append(f"メインキーワード「{row['main_keyword']}」は {row['date']} に使用済み")
+        t = similarity(row.get("theme", ""), meta.get("theme", ""))
+        if t >= TITLE_SIMILARITY_LIMIT:
+            ng.append(f"テーマが {row['date']}「{row['theme']}」と似すぎ（{t:.2f}）")
         s = similarity(row.get("title", ""), meta.get("title", ""))
         if s >= TITLE_SIMILARITY_LIMIT:
             ng.append(f"タイトルが {row['date']}「{row['title']}」と似すぎ（{s:.2f}）")
