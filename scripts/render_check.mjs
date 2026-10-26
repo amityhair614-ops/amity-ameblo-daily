@@ -11,7 +11,9 @@ if (!/^\d{4}-\d{2}-\d{2}$/.test(date || '')) { console.log('使い方: node scri
 const dir = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'posts', date);
 const body = readFileSync(path.join(dir, 'article.html'), 'utf8');
 // アメブロのスマホ表示に近い条件（本文幅 約358px、16px の余白）
+// アメブロは p の余白を 0 にしている（p{margin:0;padding:0}）。空行は <p><br></p> で入れる
 const page_html = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>p{margin:0;padding:0}h2{margin:.83rem 0}h3{margin:1rem 0}</style>
 <body style="margin:0;padding:16px;font-family:-apple-system,'Hiragino Sans',sans-serif;color:#333;background:#fff;word-break:break-all;">${body}</body>`;
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });

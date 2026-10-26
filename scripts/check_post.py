@@ -40,6 +40,16 @@ MAX_EXCLAIM_RATIO = 0.2      # 「！」で終わる文の割合の上限
 MAX_HABIT = 6                # 口ぐせ1つあたりの上限
 HABITS = ["なんです", "ですよね", "ですよ", "んですよ"]
 SAME_LENGTH_RUN, SAME_LENGTH_DIFF = 5, 4
+# 読みやすさ（rules/writing_rules.md「読点・段落・やわらかさ」）
+MAX_COMMAS_IN_SENTENCE = 3   # この数で NG
+MAX_SENTENCE_LEN = 50        # これを超えると NG
+MAX_COMMA_AVG = 0.5          # 1文あたりの読点の平均（参考記事は 0.33〜0.44）
+WARN_TWO_COMMAS, WARN_LONG_LEN, WARN_LONG_COUNT = 3, 40, 4
+MAX_SENTENCES_IN_PARAGRAPH = 2
+SHORT_LINE = 15              # 体言止めを3行並べる段落は、各文がこの字数以下なら可
+HARD_WORDS = ["重要", "適切", "推奨", "となります", "において", "該当", "する必要があります", "することができます",
+              "を行う", "を行い", "実施", "傾向があります", "可能です"]
+BLOCK_TAGS = {"p", "div", "h2", "h3", "h4", "table", "tr", "td", "th", "li", "ul", "ol"}
 # 長いものから順に判定する
 ENDINGS = ["なんです", "んですよね", "んですよ", "んです", "ですよね", "ですよ", "ですね", "ますよね", "ますよ", "ますね",
            "ましょう", "でしょう", "ません", "ました", "です", "ます", "ください"]
@@ -169,6 +179,101 @@ def rhythm(text):
     return ng, warn
 
 
+class Paragraphs(HTMLParser):
+    """包みの div の直下の並び（段落・空行・枠や見出し）と、改行で区切ったテキストを集める"""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.depth = 0
+        self.items = []          # ("p", テキスト) / ("blank", "") / ("block", タグ名)
+        self.current = None
+        self.lines = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag in BLOCK_TAGS or tag == "br":
+            self.lines.append("\n")
+        if tag == "br":
+            return
+        if tag in ("img", "hr"):
+            return
+        if self.depth == 1:
+            if tag == "p":
+                self.current = []
+            else:
+                self.items.append(("block", tag))
+        self.depth += 1
+
+    def handle_endtag(self, tag):
+        if tag in BLOCK_TAGS:
+            self.lines.append("\n")
+        if tag in ("br", "img", "hr"):
+            return
+        self.depth -= 1
+        if self.depth == 1 and tag == "p" and self.current is not None:
+            body = "".join(self.current).strip()
+            self.items.append(("p", body) if body else ("blank", ""))
+            self.current = None
+
+    def handle_data(self, data):
+        self.lines.append(data)
+        if self.current is not None:
+            self.current.append(data)
+
+
+def split_sentences(text):
+    out = []
+    for line in text.split("\n"):
+        for x in re.split(r"(?<=[。！？!?])", line):
+            x = x.strip()
+            if len(x) >= 4 and x[-1] in "。！？!?":
+                out.append(x)
+    return out
+
+
+def readability(html):
+    """読点・文の長さ・段落と空行・硬い言葉を調べる（末尾の LINE・店舗は除く）"""
+    ng, warn = [], []
+    body = html.split("LINEにてご予約")[0]
+    parser = Paragraphs()
+    parser.feed(body)
+    sentences = split_sentences("".join(parser.lines))
+    if not sentences:
+        return ng, warn
+
+    commas = [x.count("、") for x in sentences]
+    for x, c in zip(sentences, commas):
+        if c >= MAX_COMMAS_IN_SENTENCE:
+            ng.append(f"読点が {c} 個の文（「。」で分ける）: {x}")
+        if len(x) > MAX_SENTENCE_LEN:
+            ng.append(f"{len(x)} 字の長い文（分ける）: {x}")
+    avg = sum(commas) / len(sentences)
+    if avg > MAX_COMMA_AVG:
+        ng.append(f"読点が1文あたり平均 {avg:.2f} 個（{MAX_COMMA_AVG} 個以下にする。「、」でつながず「。」で切る）")
+    two = [x for x, c in zip(sentences, commas) if c == 2]
+    if len(two) > WARN_TWO_COMMAS:
+        warn.append(f"読点2個の文が {len(two)} 個（分けられないか見直す）: " + " / ".join(two[:3]))
+    long = [x for x in sentences if len(x) > WARN_LONG_LEN]
+    if len(long) > WARN_LONG_COUNT:
+        warn.append(f"{WARN_LONG_LEN} 字を超える文が {len(long)} 個: " + " / ".join(long[:3]))
+    hard = [w for w in HARD_WORDS if w in body]
+    if hard:
+        warn.append("硬い言葉: " + "、".join(hard) + "（日常の言葉に言いかえる）")
+
+    # 段落と空行
+    prev = None
+    for kind, text in parser.items:
+        if kind == "p":
+            ss = split_sentences(text)
+            if len(ss) > MAX_SENTENCES_IN_PARAGRAPH and not all(len(x) <= SHORT_LINE for x in ss):
+                ng.append(f"{len(ss)} 文の段落（1〜2文にする）: {text[:30]}…")
+            if prev == "p":
+                ng.append(f"段落の間に空行 <p><br></p> がない: {text[:30]}…")
+        if kind == "blank" and prev == "blank":
+            ng.append("空行 <p><br></p> が2つ以上続いている")
+        prev = kind
+    return ng, warn
+
+
 def load_products():
     return json.loads((ROOT / "data/affiliate_links.json").read_text(encoding="utf-8")).get("links", [])
 
@@ -210,7 +315,12 @@ def check(date):
         if word in text or word in meta.get("title", ""):
             ng.append(f"使わない言葉「{word}」がある")
     # 最後の LINE・店舗・Instagram は決まった文なので、リズムの確認から外す
-    r_ng, r_warn = rhythm(text.split("LINEにてご予約")[0])
+    lines = Paragraphs()
+    lines.feed(html.split("LINEにてご予約")[0])
+    r_ng, r_warn = rhythm("\n".join(split_sentences("".join(lines.lines))))
+    ng += r_ng
+    warn += r_warn
+    r_ng, r_warn = readability(html)
     ng += r_ng
     warn += r_warn
     n = len(re.sub(r"\s", "", text))

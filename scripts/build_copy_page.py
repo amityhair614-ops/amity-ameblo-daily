@@ -33,6 +33,7 @@ button.sub {{ background:transparent; color:var(--accent); border:1px solid var(
 textarea {{ width:100%; height:120px; font-size:12px; margin-top:10px; border:1px solid var(--line); border-radius:10px; padding:8px; background:var(--bg); color:var(--text); }}
 .msg {{ text-align:center; font-size:14px; min-height:20px; margin-top:8px; color:var(--accent); }}
 .preview {{ background:#fff; color:#333; border-radius:10px; padding:12px; margin-top:12px; overflow-x:auto; }}
+.preview p {{ margin:0; padding:0; }}
 details summary {{ cursor:pointer; color:var(--sub); font-size:14px; }}
 </style>
 <main>
@@ -47,7 +48,7 @@ details summary {{ cursor:pointer; color:var(--sub); font-size:14px; }}
   <textarea id="src" readonly></textarea>
 </div>
 <div class="card">
-  <details><summary>表示の確認（プレビュー）</summary><div class="preview" id="pv"></div></details>
+  <details><summary>表示の確認（プレビュー・アメブロに近い表示）</summary><div class="preview" id="pv"></div></details>
 </div>
 <p class="meta">アメブロの「HTML表示」に切り替えてから貼り付けてください。</p>
 </main>
