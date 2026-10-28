@@ -30,17 +30,17 @@ MIN_CHARS, MAX_CHARS = 2500, 7000
 MAX_SAME_PRODUCT = 3
 TITLE_SIMILARITY_LIMIT = 0.5
 REQUIRED_TEXT = ["よくある質問", "まとめ"]
-# 話し言葉のリズム（rules/writing_rules.md「話し言葉のリズム」）
+# 話し言葉のリズム（rules/writing_rules.md「文体の基準」）
 DESU_MASU = re.compile(r"(です|ます|ません|ました|でしょう)。$")
-MAX_DESU_RATIO = 0.5
-MAX_DESU_RUN = 6
+MAX_DESU_RATIO = 0.7
+MAX_DESU_RUN = 7
 MAX_SAME_ENDING_RUN = 4      # 同じ語尾が続く上限（この数で NG）
 MAX_EXCLAIM_RUN = 3          # 「！」で終わる文が続く上限（この数で NG）
 MAX_EXCLAIM_RATIO = 0.2      # 「！」で終わる文の割合の上限
 MAX_HABIT = 6                # 口ぐせ1つあたりの上限
 HABITS = ["なんです", "ですよね", "ですよ", "んですよ"]
 SAME_LENGTH_RUN, SAME_LENGTH_DIFF = 5, 4
-# 読みやすさ（rules/writing_rules.md「読点・段落・やわらかさ」）
+# 読みやすさ（rules/writing_rules.md「文体の基準」）
 MAX_COMMAS_IN_SENTENCE = 3   # この数で NG
 MAX_SENTENCE_LEN = 50        # これを超えると NG
 MAX_COMMA_AVG = 0.5          # 1文あたりの読点の平均（参考記事は 0.33〜0.44）
@@ -140,13 +140,12 @@ def rhythm(text):
     # です・ます止めばかりの説明書のような文章
     desu = [bool(DESU_MASU.search(x)) for x in sentences]
     ratio = sum(desu) / total
+    # 注意として表示するだけ。数を合わせるために文を不自然に切らない（rules/writing_rules.md「文体の基準」）
     if ratio >= MAX_DESU_RATIO:
-        ng.append(f"「です・ます」で終わる文が {ratio:.0%}（半分未満にする。言い切り・体言止め・問いかけを混ぜる）")
-    elif ratio >= 0.45:
-        warn.append(f"「です・ます」で終わる文が {ratio:.0%}（やや多い）")
+        warn.append(f"「です・ます」で終わる文が {ratio:.0%}（説明調が続いていないか読み直す）")
     run = longest_run(desu, lambda a, b: a and b) if any(desu) else 0
     if run >= MAX_DESU_RUN:
-        ng.append(f"「です・ます」で終わる文が {run} 文続く箇所がある（{MAX_DESU_RUN - 1} 文まで）")
+        warn.append(f"「です・ます」で終わる文が {run} 文続く箇所がある（説明調が続いていないか読み直す）")
 
     # 同じ語尾の連続（「〜なんです。〜なんです。〜なんです。」など）
     ends = [ending(x) for x in sentences]
