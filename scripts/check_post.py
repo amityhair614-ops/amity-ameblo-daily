@@ -27,7 +27,10 @@ AD_LABEL = re.compile(r"((?<![A-Za-z])PR(?![A-Za-z])|広告|アフィリエイ�
 CTA_WORDS = ["で見る", "商品ページ", "詳細を見る", "詳しく見る", "購入はこちら", "こちらから購入", "購入する", "チェックする▶", "▶"]
 PRICE = re.compile(r"[0-9０-９,，]+\s*円")
 MIN_CHARS, MAX_CHARS = 2500, 7000
-MAX_SAME_PRODUCT = 3
+MAX_SAME_PRODUCT = 1        # 同じ商品名は記事内で1回だけ
+MIN_PRODUCTS, MAX_PRODUCTS = 1, 2  # 1記事1商品以上、多くて2商品（rules/writing_rules.md「商品の紹介」）
+# 年代は書かない（rules/writing_rules.md「年代を書かない」）
+AGE = re.compile(r"[0-9０-９]+\s*代|年齢を重ね|年齢とともに|加齢|アラサー|アラフォー|アラフィフ")
 TITLE_SIMILARITY_LIMIT = 0.5
 REQUIRED_TEXT = ["よくある質問", "まとめ"]
 # 話し言葉のリズム（rules/writing_rules.md「文体の基準」）
@@ -43,12 +46,14 @@ SAME_LENGTH_RUN, SAME_LENGTH_DIFF = 5, 4
 # 読みやすさ（rules/writing_rules.md「文体の基準」）
 MAX_COMMAS_IN_SENTENCE = 3   # この数で NG
 MAX_SENTENCE_LEN = 50        # これを超えると NG
-MAX_COMMA_AVG = 0.5          # 1文あたりの読点の平均（参考記事は 0.33〜0.44）
-WARN_TWO_COMMAS, WARN_LONG_LEN, WARN_LONG_COUNT = 3, 40, 4
+MAX_COMMA_AVG = 0.35         # 1文あたりの読点の平均（2026-10-30 に 0.5 から下げた。目安は 0.3 以下）
+WARN_COMMA_AVG = 0.3
+WARN_TWO_COMMAS, WARN_LONG_LEN, WARN_LONG_COUNT = 1, 40, 4
 MAX_SENTENCES_IN_PARAGRAPH = 2
 SHORT_LINE = 15              # 体言止めを3行並べる段落は、各文がこの字数以下なら可
 HARD_WORDS = ["重要", "適切", "推奨", "となります", "において", "該当", "する必要があります", "することができます",
-              "を行う", "を行い", "実施", "傾向があります", "可能です"]
+              "を行う", "を行い", "実施", "傾向があります", "可能です",
+              "印象", "調整", "量感", "輪郭", "維持", "状態"]
 BLOCK_TAGS = {"p", "div", "h2", "h3", "h4", "table", "tr", "td", "th", "li", "ul", "ol"}
 # 長いものから順に判定する
 ENDINGS = ["なんです", "んですよね", "んですよ", "んです", "ですよね", "ですよ", "ですね", "ますよね", "ますよ", "ますね",
@@ -247,7 +252,9 @@ def readability(html):
             ng.append(f"{len(x)} 字の長い文（分ける）: {x}")
     avg = sum(commas) / len(sentences)
     if avg > MAX_COMMA_AVG:
-        ng.append(f"読点が1文あたり平均 {avg:.2f} 個（{MAX_COMMA_AVG} 個以下にする。「、」でつながず「。」で切る）")
+        ng.append(f"読点が1文あたり平均 {avg:.2f} 個（{MAX_COMMA_AVG} 個以下にする。「、」が無くても伝わる文に書き直す。ぶつ切りにはしない）")
+    elif avg > WARN_COMMA_AVG:
+        warn.append(f"読点が1文あたり平均 {avg:.2f} 個（目安は {WARN_COMMA_AVG} 個以下）")
     two = [x for x, c in zip(sentences, commas) if c == 2]
     if len(two) > WARN_TWO_COMMAS:
         warn.append(f"読点2個の文が {len(two)} 個（分けられないか見直す）: " + " / ".join(two[:3]))
@@ -256,7 +263,7 @@ def readability(html):
         warn.append(f"{WARN_LONG_LEN} 字を超える文が {len(long)} 個: " + " / ".join(long[:3]))
     hard = [w for w in HARD_WORDS if w in body]
     if hard:
-        warn.append("硬い言葉: " + "、".join(hard) + "（日常の言葉に言いかえる）")
+        warn.append("硬い言葉: " + "、".join(hard) + "（日常の言葉に言いかえる。rules/writing_rules.md「やさしい言葉にする」）")
 
     # 段落と空行
     prev = None
@@ -310,6 +317,11 @@ def check(date):
         ng.append(f"閉じていないタグ: {parser.stack}")
     text = "".join(parser.text)
 
+    meta_words = " ".join([meta.get("title", ""), meta.get("main_keyword", "")] + list(meta.get("sub_keywords", [])))
+    for where, src in (("本文", text), ("meta.json", meta_words)):
+        m = AGE.search(src)
+        if m:
+            ng.append(f"{where}に年代・年齢の表現「{m.group()}」がある（年代は書かない。髪の悩み・髪質を中心にする）")
     for word in FORBIDDEN_WORDS:
         if word in text or word in meta.get("title", ""):
             ng.append(f"使わない言葉「{word}」がある")
@@ -364,6 +376,13 @@ def check(date):
     for pid, count in named.items():
         if count > MAX_SAME_PRODUCT:
             ng.append(f"商品名「{pid}」が {count} 回（{MAX_SAME_PRODUCT} 回まで）")
+    if len(named) < MIN_PRODUCTS:
+        if meta.get("no_product_reason"):
+            warn.append(f"商品なし（理由: {meta['no_product_reason']}）。報告で追加が必要な商品を伝える")
+        else:
+            ng.append("商品が入っていない（1記事1商品以上。合う登録商品がないときは meta.json に no_product_reason を書く）")
+    if len(named) > MAX_PRODUCTS:
+        ng.append(f"商品が {len(named)} 個（{MAX_PRODUCTS} 商品まで。基本は1商品）")
     if set(named) != set(meta.get("affiliate_ids", [])):
         ng.append(f"meta.json の affiliate_ids が本文の商品名と一致しない（本文: {sorted(named)}）")
 

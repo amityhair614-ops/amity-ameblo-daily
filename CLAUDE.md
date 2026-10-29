@@ -18,13 +18,14 @@ Amity（美容室）のアメブロ用収益記事を、毎日1本だけ新し�
 4. 記事を書く（rules/writing_rules.md の構成どおり）。HTMLは templates/components.html の部品だけで組み立てる
 5. posts/$DATE/article.html（アメブロに貼る本文HTML）と posts/$DATE/meta.json を作る
    - meta.json: `{"date","title","theme","main_keyword","category","search_intent","affiliate_ids":[],"sub_keywords":[]}`
+   - 商品は登録商品から1つ以上（基本1つ、多くて2つ）。合う商品がないときだけ affiliate_ids を空にし、`"no_product_reason"` に理由と追加が必要な商品の種類を書く
 6. `python3 scripts/check_post.py $DATE` が OK になるまで直す。NG のまま保存しない
 7. iPhoneの幅（390px）で表示を確認する: `node scripts/render_check.mjs $DATE` で画像を作り、Read で開いて崩れ・はみ出しがないかを目で見る
 8. data/theme_history.csv に1行追加する（status は `created`）
 9. `python3 scripts/build_copy_page.py` で copy/index.html を作り直す
 10. コミットして main に push する（force push・rebase・amend はしない。拒否されたら `git pull --no-rebase origin main` してから再 push。ネットワークエラーは 2・4・8・16秒待って最大4回）
 11. コピー用ページを更新する: data/copy_page.json の url を Artifact の read で読み、copy/index.html をその url に publish する（新しい url を作らない）
-12. origin/main に posts/$DATE/article.html と meta.json があることを確認できたときだけ「成功」と報告する（タイトル・テーマ・使った商品・コピー用ページのURL）
+12. origin/main に posts/$DATE/article.html と meta.json があることを確認できたときだけ「成功」と報告する（タイトル・テーマ・使った商品・コピー用ページのURL。商品が無かったときは「追加が必要な商品」も）
 
 ## 失敗したとき
 - 途中で止まったら logs/failures.md に「日付・止まった手順・理由」を追記して push し、「失敗」と報告する
