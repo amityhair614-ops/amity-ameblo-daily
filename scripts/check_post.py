@@ -14,6 +14,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 FORBIDDEN_WORDS = ["僕は", "思います", "候補", "先日お客様", "お客様から", "実際に使って"]
+# AIっぽい励まし・きれいすぎるまとめ（rules/writing_rules.md「AIっぽい言い回しを使わない」）
+AI_PHRASES = ["あなたのせいではありません", "あなたのせいじゃない", "あなたは悪くない", "自分に合ったケア", "今日から変えられ",
+              "一緒に考えていきましょう", "いっしょに考えていきましょう", "自分らしく", "きっと変わります"]
 # アメブロの HTML 編集で使えるタグだけ
 ALLOWED_TAGS = {
     "div", "p", "span", "strong", "b", "em", "br", "hr", "h2", "h3", "h4",
@@ -53,7 +56,8 @@ MAX_SENTENCES_IN_PARAGRAPH = 2
 SHORT_LINE = 15              # 体言止めを3行並べる段落は、各文がこの字数以下なら可
 HARD_WORDS = ["重要", "適切", "推奨", "となります", "において", "該当", "する必要があります", "することができます",
               "を行う", "を行い", "実施", "傾向があります", "可能です",
-              "印象", "調整", "量感", "輪郭", "維持", "状態"]
+              "印象", "調整", "量感", "輪郭", "維持", "状態",
+              "キューティクル", "置きどころ", "水分が出入り", "静電気"]
 BLOCK_TAGS = {"p", "div", "h2", "h3", "h4", "table", "tr", "td", "th", "li", "ul", "ol"}
 # 長いものから順に判定する
 ENDINGS = ["なんです", "んですよね", "んですよ", "んです", "ですよね", "ですよ", "ですね", "ますよね", "ますよ", "ますね",
@@ -322,6 +326,9 @@ def check(date):
         m = AGE.search(src)
         if m:
             ng.append(f"{where}に年代・年齢の表現「{m.group()}」がある（年代は書かない。髪の悩み・髪質を中心にする）")
+    for word in AI_PHRASES:
+        if word in text:
+            ng.append(f"AIっぽい言い回し「{word}」がある（励ましすぎ・きれいにまとめすぎない）")
     for word in FORBIDDEN_WORDS:
         if word in text or word in meta.get("title", ""):
             ng.append(f"使わない言葉「{word}」がある")
