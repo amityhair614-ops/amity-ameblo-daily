@@ -13,9 +13,9 @@ Amity（美容室）のアメブロ用収益記事を、毎日1本だけ新し�
 
 ## 毎日の手順
 1. 日付は日本時間: `DATE=$(TZ=Asia/Tokyo date +%F)`。posts/$DATE/ が既にあれば何も作らずに終了し「既に存在するため作成しなかった」と報告する
-2. 次を読み直す: rules/writing_rules.md、rules/html_style.md、rules/style_analysis.md、rules/profile.json、templates/components.html、data/affiliate_links.json、data/theme_pool.md、data/theme_history.csv、data/performance.csv、samples/ の見本
+2. 次を読み直す: rules/writing_rules.md、rules/story_rules.md、rules/html_style.md、rules/style_analysis.md、rules/profile.json、templates/components.html、data/affiliate_links.json、data/theme_pool.md、data/theme_history.csv、data/performance.csv、samples/ の見本
 3. テーマを1つ選ぶ（下の「テーマの選び方」）。`python3 scripts/pick_theme.py` の上位から検討する
-4. 記事を書く（rules/writing_rules.md の構成どおり）。HTMLは templates/components.html の部品だけで組み立てる
+4. 記事を書く（rules/story_rules.md のストーリーの流れと rules/writing_rules.md の構成・文体で。drafts/story-sample/ の見本を参考にする。直近の記事と同じ構成・見出しにしない）。HTMLは templates/components.html の部品だけで組み立てる
 5. posts/$DATE/article.html（アメブロに貼る本文HTML）と posts/$DATE/meta.json を作る
    - meta.json: `{"date","title","theme","main_keyword","category","search_intent","affiliate_ids":[],"sub_keywords":[]}`
    - 商品は登録商品から1つ以上（基本1つ、多くて2つ）。合う商品がないときだけ affiliate_ids を空にし、`"no_product_reason"` に理由と追加が必要な商品の種類を書く

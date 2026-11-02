@@ -29,7 +29,7 @@ FORBIDDEN_CSS = ["position", "@media", "javascript:", "expression(", "url(", "di
 AD_LABEL = re.compile(r"((?<![A-Za-z])PR(?![A-Za-z])|広告|アフィリエイト)")
 CTA_WORDS = ["で見る", "商品ページ", "詳細を見る", "詳しく見る", "購入はこちら", "こちらから購入", "購入する", "チェックする▶", "▶"]
 PRICE = re.compile(r"[0-9０-９,，]+\s*円")
-MIN_CHARS, MAX_CHARS = 2500, 7000
+MAX_CHARS = 7000   # 文字数の下限は決めない（2026-11-03。字数より読みやすさと内容を優先）
 MAX_SAME_PRODUCT = 1        # 同じ商品名は記事内で1回だけ
 MIN_PRODUCTS, MAX_PRODUCTS = 1, 2  # 1記事1商品以上、多くて2商品（rules/writing_rules.md「商品の紹介」）
 # 年代は書かない（rules/writing_rules.md「年代を書かない」）
@@ -342,8 +342,8 @@ def check(date):
     ng += r_ng
     warn += r_warn
     n = len(re.sub(r"\s", "", text))
-    if not MIN_CHARS <= n <= MAX_CHARS:
-        ng.append(f"本文 {n} 字（{MIN_CHARS}〜{MAX_CHARS} 字にする）")
+    if n > MAX_CHARS:
+        ng.append(f"本文 {n} 字（{MAX_CHARS} 字までにする）")
     for need in REQUIRED_TEXT:
         if need not in text:
             ng.append(f"「{need}」の見出しがない")
